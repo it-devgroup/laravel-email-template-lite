@@ -48,6 +48,14 @@ class EmailTemplateService implements EmailTemplateServiceInterface
      * @var bool|null
      */
     private bool $parseMethodSetVariables = false;
+    /**
+     * @var string|null
+     */
+    private ?string $parseTagOpen = null;
+    /**
+     * @var string|null
+     */
+    private ?string $parseTagClose = null;
 
     /**
      * EmailTemplateService constructor.
@@ -59,6 +67,8 @@ class EmailTemplateService implements EmailTemplateServiceInterface
         $this->parseMethod = Config::get('email_template_lite.variable_parser.method');
         $this->parseMethodType = Config::get('email_template_lite.variable_parser.method_type');
         $this->parseMethodSetVariables = Config::get('email_template_lite.variable_parser.method_set_variables');
+        $this->parseTagOpen = Config::get('email_template_lite.variable_parser.tag_open');
+        $this->parseTagClose = Config::get('email_template_lite.variable_parser.tag_close');
     }
 
     /**
@@ -213,12 +223,48 @@ class EmailTemplateService implements EmailTemplateServiceInterface
 
     /**
      * @param string $content
+     * @return string
+     */
+    private function parseContentCommonVariables(string $content): string
+    {
+        $variables = collect(Config::get('email_template_lite.variables.common'));
+
+        if (!$variables->count()) {
+            return $content;
+        }
+
+        $data = [];
+        foreach ($variables as $key => $className) {
+            try {
+                $variable = app($className);
+            } catch (Exception $e) {
+                continue;
+            }
+
+            $key = sprintf(
+                '%s%s%s',
+                $this->parseTagOpen,
+                $key,
+                $this->parseTagClose
+            );
+            $data[$key] = $variable->toString();
+        }
+
+        $content = strtr($content, $data);
+
+        return $content;
+    }
+
+    /**
+     * @param string $content
      * @param array $variables
      * @return string
      * @throws Exception
      */
     private function parseContent(string $content, array $variables): string
     {
+        $content = $this->parseContentCommonVariables($content);
+
         $className = $this->parseClass;
         $methodName = $this->parseMethod;
         if ($className && $methodName && $this->parseMethodType == self::PARSE_METHOD_TYPE_PUBLIC) {

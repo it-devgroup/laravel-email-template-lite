@@ -309,3 +309,39 @@ php artisan email:template:sync
 3. Add email template variables to config file **config/email_template_lite.php** in section **variables**
 
 4. Add text for variables in to lexicon file **resources/lang/LANG_KEY/email_template_variables.php**
+
+## The procedure of adding new common variable
+
+1. Open file **config/email_template_lite.php** and add variable in section **variables - common**, example:
+
+```
+'variables' => [
+    'common' => [
+        'site_name' => \App\CustomEmailTemplateVariableSiteName::class,
+    ],
+    ...
+```
+
+2. Create class **\App\CustomEmailTemplateVariableSiteName**
+
+3. The class must be an implementation of the interface **ItDevgroup\LaravelEmailTemplateLite\EmailTemplateVariableInterface**
+
+4. The class must contain a public method **toString(): ?string**
+
+Full example file
+
+```
+<?php
+
+namespace App;
+
+use ItDevgroup\LaravelEmailTemplateLite\EmailTemplateVariableInterface;
+
+class CustomEmailTemplateVariableSiteName implements EmailTemplateVariableInterface
+{
+    public function toString(): ?string
+    {
+        return 'site name';
+    }
+}
+```

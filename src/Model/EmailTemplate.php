@@ -69,7 +69,7 @@ class EmailTemplate extends Model
     public function getVariablesAttribute()
     {
         $data = collect();
-        $variables = collect(Config::get('email_template_lite.variables.common'));
+        $variables = collect(Config::get('email_template_lite.variables.common'))->keys();
 
         $configKey = sprintf(
             'email_template_lite.variables.type.%s',

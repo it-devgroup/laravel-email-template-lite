@@ -148,11 +148,19 @@ return [
         |--------------------------------------------------------------------------
         | Example: [
         |     'common' => [
-        |         'site_name',
-        |         'site_url',
+        |         'site_name' => \App\CustomEmailVariableSiteName::class,
+        |         'site_url' => \App\CustomEmailVariableSiteUrl::class,
         |         ...
         |     ]
         | ]
+        | Example class:
+        | class CustomEmailTemplateVariableSiteName implements \ItDevgroup\LaravelEmailTemplateLite\EmailTemplateVariableInterface
+        | {
+        |     public function toString(): ?string
+        |     {
+        |         return 'text';
+        |     }
+        | }
         */
         'common' => [
             /* list of variables for all email template types */
