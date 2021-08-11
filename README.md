@@ -345,3 +345,11 @@ class CustomEmailTemplateVariableSiteName implements EmailTemplateVariableInterf
     }
 }
 ```
+
+#### Test
+
+For test need phpunit
+
+```
+vendor/bin/phpunit vendor/it-devgroup/laravel-email-template-lite
+```

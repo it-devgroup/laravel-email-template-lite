@@ -34,7 +34,15 @@
     "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
-            "ItDevgroup\\LaravelEmailTemplateLite\\": "src/"
+            "ItDevgroup\\LaravelEmailTemplateLite\\": "src/",
+            "ItDevgroup\\LaravelEmailTemplateLite\\Test\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "ItDevgroup\\LaravelEmailTemplateLite\\Providers\\EmailTemplateServiceProvider"
+            ]
         }
     }
 }
