@@ -8,10 +8,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 use ItDevgroup\LaravelEmailTemplateLite\Exceptions\EmailTemplateNotFound;
+use ItDevgroup\LaravelEmailTemplateLite\Exceptions\EmailTemplateWrapperNotFound;
 use ItDevgroup\LaravelEmailTemplateLite\Model\EmailTemplate;
 use ItDevgroup\LaravelEmailTemplateLite\Model\EmailTemplateFilter;
+use Throwable;
 
 /**
  * Class EmailTemplateService
@@ -56,6 +59,10 @@ class EmailTemplateService implements EmailTemplateServiceInterface
      * @var string|null
      */
     private ?string $parseTagClose = null;
+    /**
+     * @var string|null
+     */
+    private ?string $emailWrapper = null;
 
     /**
      * EmailTemplateService constructor.
@@ -69,6 +76,45 @@ class EmailTemplateService implements EmailTemplateServiceInterface
         $this->parseMethodSetVariables = Config::get('email_template_lite.variable_parser.method_set_variables');
         $this->parseTagOpen = Config::get('email_template_lite.variable_parser.tag_open');
         $this->parseTagClose = Config::get('email_template_lite.variable_parser.tag_close');
+        $this->emailWrapper = Config::get('email_template_lite.wrapper');
+    }
+
+    /**
+     * @return string|null
+     * @throws EmailTemplateWrapperNotFound
+     */
+    public function emailWrapper(): ?string
+    {
+        if (!$this->emailWrapper) {
+            return null;
+        }
+
+        $variable = sprintf(
+            '%scontent%s',
+            $this->parseTagOpen,
+            $this->parseTagClose
+        );
+
+        try {
+            return View::make(
+                $this->emailWrapper,
+                [
+                    'content' => $variable
+                ]
+            )->render();
+        } catch (Throwable $e) {
+            throw EmailTemplateWrapperNotFound::message($this->emailWrapper);
+        }
+    }
+
+    /**
+     * @param string|null $emailWrapper
+     * @return EmailTemplateService
+     */
+    public function setEmailWrapper(?string $emailWrapper): self
+    {
+        $this->emailWrapper = $emailWrapper;
+        return $this;
     }
 
     /**
@@ -180,9 +226,10 @@ class EmailTemplateService implements EmailTemplateServiceInterface
     /**
      * @param EmailTemplate $emailTemplate
      * @param array $variables
-     * @throws Exception
+     * @param bool $wrapper
+     * @throws EmailTemplateWrapperNotFound
      */
-    public function render(EmailTemplate $emailTemplate, array $variables): void
+    public function render(EmailTemplate $emailTemplate, array $variables, bool $wrapper = true): void
     {
         $fields = Config::get('email_template_lite.variable_parser.parse_fields');
         if (!is_array($fields) || !count($fields)) {
@@ -196,6 +243,19 @@ class EmailTemplateService implements EmailTemplateServiceInterface
 
             $emailTemplate->$field = $this->parseContent($emailTemplate->$field, $variables);
         }
+
+        if ($wrapper) {
+            $this->renderWrapper($emailTemplate);
+        }
+    }
+
+    /**
+     * @param EmailTemplate $emailTemplate
+     * @throws EmailTemplateWrapperNotFound
+     */
+    public function preview(EmailTemplate $emailTemplate): void
+    {
+        $this->render($emailTemplate, []);
     }
 
     /**
@@ -250,9 +310,7 @@ class EmailTemplateService implements EmailTemplateServiceInterface
             $data[$key] = $variable->toString();
         }
 
-        $content = strtr($content, $data);
-
-        return $content;
+        return strtr($content, $data);
     }
 
     /**
@@ -279,6 +337,28 @@ class EmailTemplateService implements EmailTemplateServiceInterface
             return (string)new $className($content, $variables);
         } else {
             throw new Exception('Wrong configuration combination for parser');
+        }
+    }
+
+    /**
+     * @param EmailTemplate $emailTemplate
+     * @throws EmailTemplateWrapperNotFound
+     */
+    private function renderWrapper(EmailTemplate $emailTemplate): void
+    {
+        if (!$this->emailWrapper) {
+            return;
+        }
+
+        try {
+            $emailTemplate->body = View::make(
+                $this->emailWrapper,
+                [
+                    'content' => $emailTemplate->body
+                ]
+            )->render();
+        } catch (Throwable $e) {
+            throw EmailTemplateWrapperNotFound::message($this->emailWrapper);
         }
     }
 }

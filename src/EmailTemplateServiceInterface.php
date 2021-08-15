@@ -15,6 +15,17 @@ use ItDevgroup\LaravelEmailTemplateLite\Model\EmailTemplateFilter;
 interface EmailTemplateServiceInterface
 {
     /**
+     * @return string|null
+     */
+    public function emailWrapper(): ?string;
+
+    /**
+     * @param string|null $emailWrapper
+     * @return EmailTemplateService
+     */
+    public function setEmailWrapper(?string $emailWrapper): self;
+
+    /**
      * @param EmailTemplateFilter|null $filter
      * @param int|null $page
      * @param int|null $perPage
@@ -67,4 +78,9 @@ interface EmailTemplateServiceInterface
      * @param array $variables
      */
     public function render(EmailTemplate $emailTemplate, array $variables): void;
+
+    /**
+     * @param EmailTemplate $emailTemplate
+     */
+    public function preview(EmailTemplate $emailTemplate): void;
 }

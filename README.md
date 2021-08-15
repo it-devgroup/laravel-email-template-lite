@@ -1,7 +1,15 @@
 ## 
 ## Description
 
-This package save and work with email template in to database
+- command for sync email templates table in database
+- all email templates in seeder file
+- save and load email templates from database (API for CRUD system)
+- custom variables (common and separate variables for each type of template)
+- custom variables via config file
+- text for custom variables via lexicon file
+- wrapper template for all email templates (blade)
+- preview email template
+- customization email template model and table
 
 ## Install for Lumen
 
@@ -285,6 +293,14 @@ $service->render($emailTemplate, ['test_1' => '111', 'test_2' => 222]);
 return $emailTemplate;
 ```
 
+#### Email template preview
+
+```
+$service->preview($emailTemplate);
+//
+return $emailTemplate;
+```
+
 #### Email template variables
 
 ```
@@ -294,6 +310,18 @@ $emailTemplate = $service->getByType('type');
 $emailTemplate->variables; // Collection
 $emailTemplate->variables[0]->key;
 $emailTemplate->variables[0]->description;
+```
+
+#### Email template wrapper
+
+```
+return $service->emailWrapper();
+```
+
+#### Email template set new wrapper (for change via code)
+
+```
+$service->setEmailWrapper('email-template.wrapper');
 ```
 
 ## The procedure of adding new template

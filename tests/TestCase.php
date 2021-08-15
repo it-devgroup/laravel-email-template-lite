@@ -3,9 +3,11 @@
 namespace ItDevgroup\LaravelEmailTemplateLite\Test;
 
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\View;
 use ItDevgroup\LaravelEmailTemplateLite\EmailTemplateService;
 use ItDevgroup\LaravelEmailTemplateLite\Test\Resource\ConfigFacadeTest;
 use ItDevgroup\LaravelEmailTemplateLite\Test\Resource\EmailTemplateModelTest;
+use ItDevgroup\LaravelEmailTemplateLite\Test\Resource\ViewFacadeTest;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use ReflectionClass;
 use ReflectionException;
@@ -35,6 +37,9 @@ class TestCase extends BaseTestCase
 
         $instance = new ConfigFacadeTest();
         Config::swap($instance);
+
+        $instance = new ViewFacadeTest();
+        View::swap($instance);
 
         $this->reflectionClass = new ReflectionClass(EmailTemplateService::class);
         $this->service = $this->reflectionClass->newInstanceWithoutConstructor();

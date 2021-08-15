@@ -3,6 +3,7 @@
 namespace ItDevgroup\LaravelEmailTemplateLite\Test;
 
 use ItDevgroup\LaravelEmailTemplateLite\Exceptions\EmailTemplateNotFound;
+use ItDevgroup\LaravelEmailTemplateLite\Exceptions\EmailTemplateWrapperNotFound;
 use ItDevgroup\LaravelEmailTemplateLite\Model\EmailTemplate;
 use ItDevgroup\LaravelEmailTemplateLite\Model\EmailTemplateFilter;
 use ItDevgroup\LaravelEmailTemplateLite\Test\Resource\EmailTemplateModelTest;
@@ -103,6 +104,135 @@ class ServiceTest extends TestCase
             $emailTemplate->body,
             'body cv text, [[cv2]]'
         );
+    }
+
+    /**
+     * @test
+     */
+    public function serviceTestRenderWrapperSuccess()
+    {
+        $this->service->setEmailWrapper('wrapper');
+
+        $emailTemplate = new EmailTemplateModelTest();
+        $emailTemplate->subject = 'subject';
+        $emailTemplate->body = 'body text';
+        $this->service->render($emailTemplate, []);
+
+        $this->assertEquals(
+            trim($emailTemplate->body),
+            sprintf('header text:<br>%s:<br>footer text', 'body text')
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function serviceTestRenderWrapperDisableSuccess()
+    {
+        $this->service->setEmailWrapper('wrapper');
+
+        $emailTemplate = new EmailTemplateModelTest();
+        $emailTemplate->subject = 'subject';
+        $emailTemplate->body = 'body text';
+        $this->service->render($emailTemplate, [], false);
+
+        $this->assertEquals(
+            $emailTemplate->body,
+            'body text'
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function serviceTestRenderWrapperError()
+    {
+        $this->expectException(EmailTemplateWrapperNotFound::class);
+
+        $this->service->setEmailWrapper('failed');
+
+        $emailTemplate = new EmailTemplateModelTest();
+        $emailTemplate->subject = 'subject';
+        $emailTemplate->body = 'body text';
+        $this->service->render($emailTemplate, []);
+    }
+
+    /**
+     * @test
+     */
+    public function serviceTestPreviewResult()
+    {
+        $emailTemplate = new EmailTemplateModelTest();
+        $emailTemplate->subject = 'subject [[v1]], [[v2]], [[v3]]';
+        $emailTemplate->body = 'body [[v1]], [[v2]], [[v3]]';
+        $this->service->preview($emailTemplate);
+        $this->assertEquals(
+            $emailTemplate->subject,
+            'subject [[v1]], [[v2]], [[v3]]'
+        );
+        $this->assertEquals(
+            $emailTemplate->body,
+            'body [[v1]], [[v2]], [[v3]]'
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function serviceTestPreviewWithWrapperResult()
+    {
+        $this->service->setEmailWrapper('wrapper');
+
+        $emailTemplate = new EmailTemplateModelTest();
+        $emailTemplate->subject = 'subject [[v1]], [[v2]], [[v3]]';
+        $emailTemplate->body = 'body [[v1]], [[v2]], [[v3]]';
+        $this->service->preview($emailTemplate);
+        $this->assertEquals(
+            $emailTemplate->subject,
+            'subject [[v1]], [[v2]], [[v3]]'
+        );
+        $this->assertEquals(
+            trim($emailTemplate->body),
+            sprintf(
+                'header text:<br>%s:<br>footer text',
+                'body [[v1]], [[v2]], [[v3]]'
+            )
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function serviceTestWrapperSuccess()
+    {
+        $this->service->setEmailWrapper('wrapper');
+
+        $wrapper = $this->service->emailWrapper();
+        $this->assertEquals(
+            trim($wrapper),
+            'header text:<br>[[content]]:<br>footer text'
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function serviceTestWrapperError()
+    {
+        $this->expectException(EmailTemplateWrapperNotFound::class);
+
+        $this->service->setEmailWrapper('failed');
+
+        $this->service->emailWrapper();
+    }
+
+    /**
+     * @test
+     */
+    public function serviceTestWrapperEmptyResult()
+    {
+        $wrapper = $this->service->emailWrapper();
+        $this->assertNull($wrapper);
     }
 
     /**

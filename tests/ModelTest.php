@@ -4,9 +4,6 @@ namespace ItDevgroup\LaravelEmailTemplateLite\Test;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
-use ItDevgroup\LaravelEmailTemplateLite\Exceptions\EmailTemplateNotFound;
-use ItDevgroup\LaravelEmailTemplateLite\Model\EmailTemplate;
-use ItDevgroup\LaravelEmailTemplateLite\Model\EmailTemplateFilter;
 use ItDevgroup\LaravelEmailTemplateLite\Model\EmailTemplateVariable;
 use ItDevgroup\LaravelEmailTemplateLite\Test\Resource\EmailTemplateModelTest;
 

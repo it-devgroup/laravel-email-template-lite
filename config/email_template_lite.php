@@ -141,6 +141,28 @@ return [
         ]
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Blade wrapper for all email templates
+    |--------------------------------------------------------------------------
+    | It is necessary to specify the blade template as a wrapper for all
+    | email templates and add a special variable
+    | in the template to insert the content of a specific email templates
+    |
+    | Example: email-template.wrapper
+    | File (path): resources/views/email-template/wrapper.blade.php
+    | Example content:
+    | ...
+    |     {!! $content !!}
+    | ...
+    */
+    'wrapper' => '',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Config variables for email templates
+    |--------------------------------------------------------------------------
+    */
     'variables' => [
         /*
         |--------------------------------------------------------------------------
