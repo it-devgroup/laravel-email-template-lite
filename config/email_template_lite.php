@@ -55,6 +55,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Field names
+    |--------------------------------------------------------------------------
+    | List of standard fields to override
+    | Example:
+    | 'field_names' => [
+    |     'original name of field' => 'name of field in to table',
+    |     'original name of field' => 'name of field in to table',
+    | ],
+    */
+    'field_names' => [
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Variable parser
     |--------------------------------------------------------------------------
     | Settings for an internal or external variable parser

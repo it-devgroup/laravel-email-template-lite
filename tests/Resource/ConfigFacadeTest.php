@@ -28,6 +28,8 @@ class ConfigFacadeTest
         ],
         'email_template_lite.variable_parser.tag_open' => '[[',
         'email_template_lite.variable_parser.tag_close' => ']]',
+        'email_template_lite.field_names.type' => null,
+        'email_template_lite.field_names.body' => null,
     ];
 
     /**

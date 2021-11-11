@@ -2,6 +2,7 @@
 
 namespace ItDevgroup\LaravelEmailTemplateLite\Test;
 
+use Illuminate\Support\Facades\Config;
 use ItDevgroup\LaravelEmailTemplateLite\Exceptions\EmailTemplateNotFound;
 use ItDevgroup\LaravelEmailTemplateLite\Exceptions\EmailTemplateWrapperNotFound;
 use ItDevgroup\LaravelEmailTemplateLite\Model\EmailTemplate;
@@ -256,5 +257,26 @@ class ServiceTest extends TestCase
         $this->assertTrue($filter->getIsActive());
         $filter->setIsActive(false);
         $this->assertFalse($filter->getIsActive());
+    }
+
+    /**
+     * @test
+     */
+    public function serviceTestFieldNameResult()
+    {
+        $res = $this->getServiceProtectedMethod('fieldName', 'type');
+        $this->assertEquals($res, 'type');
+
+        Config::set('email_template_lite.field_names.type', 'event');
+        Config::set('email_template_lite.field_names.body', 'content');
+
+        $res = $this->getServiceProtectedMethod('fieldName', 'type');
+        $this->assertEquals($res, 'event');
+
+        $res = $this->getServiceProtectedMethod('fieldName', 'is_active');
+        $this->assertEquals($res, 'is_active');
+
+        $res = $this->getServiceProtectedMethod('fieldName', 'body');
+        $this->assertEquals($res, 'content');
     }
 }

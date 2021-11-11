@@ -159,9 +159,9 @@ class EmailTemplateService implements EmailTemplateServiceInterface
     {
         /** @var Builder $builder */
         $builder = $this->modelName::query();
-        $builder->where('id', '=', $id);
+        $builder->where($this->fieldName('id'), '=', $id);
         if ($onlyActive) {
-            $builder->where('is_active', '=', true);
+            $builder->where($this->fieldName('is_active'), '=', true);
         }
         $res = $builder->first();
 
@@ -182,9 +182,9 @@ class EmailTemplateService implements EmailTemplateServiceInterface
     {
         /** @var Builder $builder */
         $builder = $this->modelName::query();
-        $builder->where('type', '=', $type);
+        $builder->where($this->fieldName('type'), '=', $type);
         if ($onlyActive) {
-            $builder->where('is_active', '=', true);
+            $builder->where($this->fieldName('is_active'), '=', true);
         }
         $res = $builder->first();
 
@@ -269,15 +269,15 @@ class EmailTemplateService implements EmailTemplateServiceInterface
         }
 
         if ($filter->getType()) {
-            $raw = $builder->raw('lower(type)');
+            $raw = $builder->raw(sprintf('lower(%s)', $this->fieldName('type')));
             $builder->where($raw, 'LIKE', Str::lower(sprintf('%%%s%%', $filter->getType())));
         }
         if ($filter->getTitle()) {
-            $raw = $builder->raw('lower(title)');
+            $raw = $builder->raw(sprintf('lower(%s)', $this->fieldName('title')));
             $builder->where($raw, 'LIKE', Str::lower(sprintf('%%%s%%', $filter->getTitle())));
         }
         if (!is_null($filter->getIsActive())) {
-            $builder->where('is_active', '=', $filter->getIsActive());
+            $builder->where($this->fieldName('is_active'), '=', $filter->getIsActive());
         }
     }
 
@@ -360,5 +360,14 @@ class EmailTemplateService implements EmailTemplateServiceInterface
         } catch (Throwable $e) {
             throw EmailTemplateWrapperNotFound::message($this->emailWrapper);
         }
+    }
+
+    /**
+     * @param string $field
+     * @return string
+     */
+    protected function fieldName(string $field): string
+    {
+        return Config::get('email_template_lite.field_names.' . $field, $field);
     }
 }

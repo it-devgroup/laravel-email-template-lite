@@ -69,4 +69,16 @@ class TestCase extends BaseTestCase
             $value
         );
     }
+
+    /**
+     * @param mixed ...$args
+     * @return mixed
+     */
+    protected function getServiceProtectedMethod(string $methodName, ...$args)
+    {
+        $method = $this->reflectionClass->getMethod($methodName);
+        $method->setAccessible(true);
+
+        return $method->invokeArgs($this->service, $args);
+    }
 }

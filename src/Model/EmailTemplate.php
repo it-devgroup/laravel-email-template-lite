@@ -53,7 +53,7 @@ class EmailTemplate extends Model
         string $subject,
         string $body
     ): self {
-        $model = new self();
+        $model = new static();
         $model->type = $type;
         $model->title = $title;
         $model->subject = $subject;
