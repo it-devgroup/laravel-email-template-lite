@@ -17,10 +17,10 @@ class CreateEmailTemplates extends Migration
             '{{TABLE_NAME}}',
             function (Blueprint $table) {
                 $table->id();
-                $table->string('type')->index()->unique();
+                $table->string('type')->index();
                 $table->string('title');
-                $table->json('subject');
-                $table->json('body');
+                $table->string('subject');
+                $table->text('body');
                 $table->boolean('is_active')->default(true)->index();
                 $table->timestamps();
             }
