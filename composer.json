@@ -2,7 +2,7 @@
     "name": "it-devgroup/laravel-email-template-lite",
     "description": "laravel email template lite",
     "type": "library",
-    "version": "1.2.1",
+    "version": "1.3.0",
     "license": "MIT",
     "authors": [
         {
@@ -25,11 +25,11 @@
     ],
     "require": {
         "php": "^7.4|^8.0",
-        "illuminate/support": "^7.0|^8.0",
-        "illuminate/contracts": "^7.0|^8.0",
-        "illuminate/database": "^7.0|^8.0",
+        "illuminate/support": "^7.0|^8.0|^9.0",
+        "illuminate/contracts": "^7.0|^8.0|^9.0",
+        "illuminate/database": "^7.0|^8.0|^9.0",
         "nesbot/carbon": "^1.0|^2.0",
-        "illuminate/collections": "^7.0|^8.0"
+        "illuminate/collections": "^7.0|^8.0|^9.0"
     },
     "minimum-stability": "dev",
     "autoload": {

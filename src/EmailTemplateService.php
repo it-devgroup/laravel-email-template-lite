@@ -109,9 +109,9 @@ class EmailTemplateService implements EmailTemplateServiceInterface
 
     /**
      * @param string|null $emailWrapper
-     * @return EmailTemplateService
+     * @return EmailTemplateServiceInterface
      */
-    public function setEmailWrapper(?string $emailWrapper): self
+    public function setEmailWrapper(?string $emailWrapper): EmailTemplateServiceInterface
     {
         $this->emailWrapper = $emailWrapper;
         return $this;

@@ -201,6 +201,14 @@ public function __construct(
 )
 ```
 
+or use helper
+
+```
+\ItDevgroup\LaravelEmailTemplateLite\Helpers\EmailTemplateHelper::getList();
+\ItDevgroup\LaravelEmailTemplateLite\Helpers\EmailTemplateHelper::getById(1);
+...
+```
+
 further we will use the variable **$service**
 
 #### List of email templates

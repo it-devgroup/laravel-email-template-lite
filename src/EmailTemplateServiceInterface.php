@@ -21,9 +21,9 @@ interface EmailTemplateServiceInterface
 
     /**
      * @param string|null $emailWrapper
-     * @return EmailTemplateService
+     * @return EmailTemplateServiceInterface
      */
-    public function setEmailWrapper(?string $emailWrapper): self;
+    public function setEmailWrapper(?string $emailWrapper): EmailTemplateServiceInterface;
 
     /**
      * @param EmailTemplateFilter|null $filter
