@@ -11,68 +11,24 @@
 - preview email template
 - customization email template model and table
 
-## Install for Lumen
-
-**1.** Open file `bootstrap/app.php`
-
-Uncommented strings
-
-```
-$app->withFacades();
-$app->withEloquent();
-```
-
-Added after **$app->configure('app');**
-
-```
-$app->configure('email_template_lite');
-```
-
-add new service provider
-
-```
-$app->register(\ItDevgroup\LaravelEmailTemplateLite\Providers\EmailTemplateServiceProvider::class);
-```
-
-**2.** Run commands
-
-For creating config file
-
-```
-php artisan email:template:publish --tag=config
-```
-
-For creating migration file
-
-```
-php artisan email:template:publish --tag=migration
-```
-
-For generate table
-
-```
-php artisan migrate
-```
-
-For creating resource file
-
-```
-php artisan email:template:publish --tag=resource
-```
-
 ## Install for laravel
 
-**1.** Open file **config/app.php** and search
+**1.** Open file **config/app.php** and search (optional, using laravel discovered package system by default)
+
 ```
     'providers' => [
         ...
     ]
 ```
+
 Add to section
+
 ```
         \ItDevgroup\LaravelEmailTemplateLite\Providers\EmailTemplateServiceProvider::class,
 ```
+
 Example
+
 ```
     'providers' => [
         ...
@@ -100,13 +56,13 @@ For generate table
 php artisan migrate
 ```
 
-For creating resource file
+For creating language file
 
 ```
-php artisan vendor:publish --provider="ItDevgroup\LaravelEmailTemplateLite\Providers\EmailTemplateServiceProvider" --tag=resources
+php artisan vendor:publish --provider="ItDevgroup\LaravelEmailTemplateLite\Providers\EmailTemplateServiceProvider" --tag=lang
 ```
 
-## Next steps install for laravel and lumen
+## Next steps install
 
 **1.** Create seeder file if not exists for email templates.
 In the created seed file, you need to add a static method (for example, `public static function data()`).
@@ -148,20 +104,6 @@ namespace App;
 
 class CustomFile extends \ItDevgroup\LaravelEmailTemplateLite\Model\EmailTemplate
 {
-}
-```
-
-If need change table name or need added other code:
-
-```
-<?php
-
-namespace App;
-
-class CustomFile extends \ItDevgroup\LaravelEmailTemplateLite\Model\EmailTemplate
-{
-    protected $table = 'YOUR_TABLE_NAME';
-    
     // other code
 }
 ```
@@ -224,7 +166,7 @@ Email templates with filter. All filter parameters not required
 ```
 $filter = (new \ItDevgroup\LaravelEmailTemplateLite\Model\EmailTemplateFilter())
     ->setIsPublic(true);
-    
+  
 // or
 
 $filter = (new \ItDevgroup\LaravelEmailTemplateLite\Model\EmailTemplateFilter())
@@ -335,7 +277,6 @@ $service->setEmailWrapper('email-template.wrapper');
 ## The procedure of adding new template
 
 1. Add to seeder file
-
 2. Run sync command
 
 ```
@@ -343,8 +284,7 @@ php artisan email:template:sync
 ```
 
 3. Add email template variables to config file **config/email_template_lite.php** in section **variables**
-
-4. Add text for variables in to lexicon file **resources/lang/LANG_KEY/email_template_variables.php**
+4. Add text for variables in to lexicon file **lang/LANG_KEY/email_template_variables.php**
 
 ## The procedure of adding new common variable
 
@@ -359,9 +299,7 @@ php artisan email:template:sync
 ```
 
 2. Create class **\App\CustomEmailTemplateVariableSiteName**
-
 3. The class must be an implementation of the interface **ItDevgroup\LaravelEmailTemplateLite\EmailTemplateVariableInterface**
-
 4. The class must contain a public method **toString(): ?string**
 
 Full example file
@@ -380,12 +318,4 @@ class CustomEmailTemplateVariableSiteName implements EmailTemplateVariableInterf
         return 'site name';
     }
 }
-```
-
-#### Test
-
-For test need phpunit
-
-```
-vendor/bin/phpunit vendor/it-devgroup/laravel-email-template-lite
 ```

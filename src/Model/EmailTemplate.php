@@ -25,10 +25,6 @@ class EmailTemplate extends Model
     /**
      * @inheritDoc
      */
-    protected $table = 'email_templates';
-    /**
-     * @inheritDoc
-     */
     protected $dates = [
         'created_at',
         'updated_at',
@@ -39,6 +35,16 @@ class EmailTemplate extends Model
     protected $casts = [
         'is_active' => 'boolean',
     ];
+
+    /**
+     * @param array $attributes
+     */
+    public function __construct(array $attributes = [])
+    {
+        $this->table = Config::get('email_template_lite.table');
+
+        parent::__construct($attributes);
+    }
 
     /**
      * @param string $type

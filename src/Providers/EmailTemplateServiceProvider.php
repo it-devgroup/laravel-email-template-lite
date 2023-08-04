@@ -68,9 +68,9 @@ class EmailTemplateServiceProvider extends ServiceProvider
             );
             $this->publishes(
                 [
-                    __DIR__ . '/../../resources' => resource_path()
+                    __DIR__ . '/../../lang' => lang_path()
                 ],
-                'resources'
+                'lang'
             );
         }
     }
